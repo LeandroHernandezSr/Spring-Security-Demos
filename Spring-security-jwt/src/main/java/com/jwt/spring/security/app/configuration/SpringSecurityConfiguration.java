@@ -12,11 +12,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
@@ -30,27 +28,15 @@ public class SpringSecurityConfiguration{
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(Customizer.withDefaults())
                 .authorizeHttpRequests(request->{
-//                    request.requestMatchers("/v1/hello").permitAll();
                     request.requestMatchers("/v1/create-user").permitAll();
-//                    request.requestMatchers("/v1/delete-user").permitAll();
+                    request.requestMatchers("/v1/delete-user").hasRole("ADMIN");
+                    request.requestMatchers("/v1/hello").hasRole("USER");
                     request.anyRequest().authenticated();
                 })
                 .sessionManagement(session->{
                     session.sessionCreationPolicy(SessionCreationPolicy.STATELESS);
                 })
                 .build();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-        manager.createUser(
-                User.withUsername("lea")
-                        .password("1234")
-                        .roles("USER")
-                        .build()
-        );
-        return manager;
     }
 
     @Bean

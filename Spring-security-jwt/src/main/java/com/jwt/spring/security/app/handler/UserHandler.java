@@ -20,6 +20,7 @@ public class UserHandler {
 
     public void createUser(UserDto userDto) {
         userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        System.out.println("PASSWORD: " + userDto.getPassword());
         this.userRepository.save(UserMapper.toEntity(userDto));
     }
 

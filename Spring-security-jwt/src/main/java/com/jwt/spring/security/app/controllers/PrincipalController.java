@@ -3,8 +3,10 @@ package com.jwt.spring.security.app.controllers;
 import com.jwt.spring.security.app.handler.UserHandler;
 import com.jwt.spring.security.app.request.UserDto;
 import jakarta.validation.Valid;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -18,7 +20,8 @@ public class PrincipalController {
     }
 
     @GetMapping("/hello")
-    public ResponseEntity<String> hello() {
+    public ResponseEntity<String> hello(Authentication auth) {
+        System.out.println(auth.getAuthorities());
         return new ResponseEntity<>("Hello world! -Not secured", HttpStatus.OK);
     }
 
