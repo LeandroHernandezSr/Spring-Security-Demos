@@ -1,5 +1,7 @@
 package com.jwt.spring.security.app.configuration;
 
+import com.jwt.spring.security.app.configuration.filters.JwtAuthenticationFilter;
+import com.jwt.spring.security.app.configuration.jwt.JwtUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -22,11 +24,22 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SpringSecurityConfiguration{
 
+    private final JwtUtils jwtUtils;
+
+    public SpringSecurityConfiguration(JwtUtils jwtUtils) {
+        this.jwtUtils = jwtUtils;
+    }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,AuthenticationManager authenticationManager) throws Exception {
+
+        JwtAuthenticationFilter jwtAuthenticationFilter = new JwtAuthenticationFilter(jwtUtils);
+        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+
         return http
                 .csrf(AbstractHttpConfigurer::disable)
-                .httpBasic(Customizer.withDefaults())
+                .addFilter(jwtAuthenticationFilter)
                 .authorizeHttpRequests(request->{
                     request.requestMatchers("/v1/create-user").permitAll();
                     request.requestMatchers("/v1/delete-user").hasRole("ADMIN");

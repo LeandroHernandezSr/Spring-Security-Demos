@@ -20,7 +20,7 @@ public class JwtUtils {
     private String timeExpiration;
 
     //Generar token de acceso
-    public String generateToken(String username) {
+    public String generateAcessToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
