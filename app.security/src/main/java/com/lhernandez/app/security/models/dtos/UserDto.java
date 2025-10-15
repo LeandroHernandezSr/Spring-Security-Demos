@@ -11,6 +11,10 @@ public class UserDto {
     private String password;
     private Set<Role> roles;
 
+    private UserDto(){
+        
+    }
+
     private UserDto(Builder builder){
         this.username=builder.username;
         this.email=builder.email;

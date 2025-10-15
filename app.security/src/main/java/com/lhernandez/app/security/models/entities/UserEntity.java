@@ -32,6 +32,9 @@ public class UserEntity {
         this.roles=builder.roles;
     }
 
+    public UserEntity() {
+    }
+
     public Long getId() {
         return id;
     }
