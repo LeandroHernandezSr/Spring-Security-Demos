@@ -1,11 +1,11 @@
-package com.lhernandez.app.security.repository;
+package com.lhernandez.app.security.repositories;
 
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.lhernandez.app.security.model.UserEntity;
+import com.lhernandez.app.security.models.entities.UserEntity;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity,Long>{

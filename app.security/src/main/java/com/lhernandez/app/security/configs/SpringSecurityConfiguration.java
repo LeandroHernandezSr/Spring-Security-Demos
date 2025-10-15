@@ -1,4 +1,4 @@
-package com.lhernandez.app.security.config;
+package com.lhernandez.app.security.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

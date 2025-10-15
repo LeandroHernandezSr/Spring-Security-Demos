@@ -1,6 +1,5 @@
-package com.lhernandez.app.security.model;
+package com.lhernandez.app.security.models.entities;
 
-import java.util.ArrayList;
 import java.util.Set;
 
 import jakarta.persistence.CascadeType;
@@ -25,6 +24,13 @@ public class UserEntity {
     @ManyToMany(fetch = FetchType.EAGER,cascade = CascadeType.PERSIST)
     @JoinTable(name = "user_roles",joinColumns = @JoinColumn(name = "user_id"),inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<RoleEntity>roles;
+
+    private UserEntity(Builder builder){
+        this.username=builder.username;
+        this.email=builder.email;
+        this.password=builder.password;
+        this.roles=builder.roles;
+    }
 
     public Long getId() {
         return id;
@@ -51,5 +57,45 @@ public class UserEntity {
         this.password = password;
     }
 
+    public Set<RoleEntity> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Set<RoleEntity> roles) {
+        this.roles = roles;
+    }
+
+    public static class Builder{
+        
+        private String username;
+        private String email;
+        private String password;
+        private Set<RoleEntity>roles;
+
+        public Builder username(String username){
+            this.username=username;
+            return this;
+        }
+
+        public Builder email(String email){
+            this.email=email;
+            return this;
+        }
+
+        public Builder password(String password){
+            this.password=password;
+            return this;
+        }
+
+        public Builder roles(Set<RoleEntity>roles){
+            this.roles=roles;
+            return this;
+        }
+
+
+        public UserEntity build(){
+            return new UserEntity(this);
+        }
+    }
     
 }

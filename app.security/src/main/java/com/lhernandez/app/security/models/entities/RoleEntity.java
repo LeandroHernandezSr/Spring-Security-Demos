@@ -1,4 +1,6 @@
-package com.lhernandez.app.security.model;
+package com.lhernandez.app.security.models.entities;
+
+import com.lhernandez.app.security.models.Role;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
