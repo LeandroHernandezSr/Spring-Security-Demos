@@ -1,5 +1,8 @@
 package com.lhernandez.app.security.configs;
 
+import com.lhernandez.app.security.configs.filters.JwtAuthenticationFilter;
+import com.lhernandez.app.security.configs.filters.JwtAuthorizationFilter;
+import com.lhernandez.app.security.configs.jwt.JwtUtils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,22 +18,36 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class SpringSecurityConfiguration {
 
+    private final JwtUtils jwtUtils;
+    private final JwtAuthorizationFilter authorizationFilter;
+
+    public SpringSecurityConfiguration(JwtUtils jwtUtils, JwtAuthorizationFilter authorizationFilter) {
+        this.jwtUtils = jwtUtils;
+        this.authorizationFilter = authorizationFilter;
+    }
+
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity https) throws Exception{
+    public SecurityFilterChain securityFilterChain(HttpSecurity https,AuthenticationManager authenticationManager) throws Exception{
+
+        JwtAuthenticationFilter jwtAuthenticationFilter =new JwtAuthenticationFilter(jwtUtils);
+        jwtAuthenticationFilter.setFilterProcessesUrl("/login");
+        jwtAuthenticationFilter.setAuthenticationManager(authenticationManager);
+
         https
         .csrf(AbstractHttpConfigurer::disable)
-        .httpBasic(Customizer.withDefaults())
         .authorizeHttpRequests(http->{
             http.requestMatchers("/api/hello-not-secured").permitAll();
             http.requestMatchers("/api/user/create").permitAll();
             http.anyRequest().authenticated();
-        });
+        }).addFilter(jwtAuthenticationFilter)
+                .addFilterBefore(authorizationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return https.build();
     }
